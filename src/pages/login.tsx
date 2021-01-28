@@ -1,13 +1,17 @@
 import { gql, useMutation } from "@apollo/client";
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { authTokenVar, isLoggedInVar } from "../apollo";
+import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import {
   loginMutation,
   loginMutationVariables,
 } from "../__generated__/loginMutation";
+import logo from "../images/logo.svg";
 
 const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
@@ -22,11 +26,18 @@ const LOGIN_MUTATION = gql`
 interface ILoginForm {
   email: string;
   password: string;
-  resultError?: string;
 }
 
 export const Login = () => {
-  const { register, getValues, handleSubmit, errors } = useForm<ILoginForm>();
+  const {
+    register,
+    getValues,
+    handleSubmit,
+    errors,
+    formState,
+  } = useForm<ILoginForm>({
+    mode: "onChange",
+  });
   const onCompleted = (data: loginMutation) => {
     const {
       login: { ok, token },
@@ -57,10 +68,16 @@ export const Login = () => {
     }
   };
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
+    <div className="canvas">
+      <Helmet>
+        <title>Login | HostPod</title>
+      </Helmet>
+      <img src={logo} alt="logo" className="w-48" />
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col items-center mt-4 w-full"
+      >
+        <div className="w-11/12">
           <input
             ref={register({
               required: "Email is required",
@@ -73,25 +90,43 @@ export const Login = () => {
             className="input"
           />
         </div>
-        <FormError errorMessage={errors.email?.message} />
-        <div>
+        <div className="w-11/12">
           <input
             ref={register({ required: "Password is required" })}
             name="password"
             type="password"
             required
             placeholder="Password"
-            className="input"
+            className="input mb-6"
           />
         </div>
-        <FormError errorMessage={errors.password?.message} />
-        <button className="mt-3 btn" disabled={loading}>
-          {loading ? "Loading..." : "Login"}
-        </button>
-        {loginMutationResult?.login.error && (
-          <FormError errorMessage={loginMutationResult.login.error} />
-        )}
+        <Button
+          canClick={formState.isValid}
+          loading={loading}
+          actionText={"Login"}
+        />
+        <div className="mb-2">
+          {errors.email?.message ? (
+            <FormError errorMessage={errors.email?.message} />
+          ) : (
+            errors.password?.message && (
+              <FormError errorMessage={errors.password?.message} />
+            )
+          )}
+          {loginMutationResult?.login.error && (
+            <FormError errorMessage={loginMutationResult.login.error} />
+          )}
+        </div>
       </form>
+      <div className="mt-2">
+        You don't have an account?{" "}
+        <Link
+          to="/create-user"
+          className="text-sm text-blue-600 hover:underline"
+        >
+          Sign up now
+        </Link>
+      </div>
     </div>
   );
 };
