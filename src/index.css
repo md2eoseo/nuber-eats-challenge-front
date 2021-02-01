@@ -14,8 +14,13 @@ code {
 
 #root {
   width: 100vw;
+  height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+#root > * {
+  width: 100%;
 }
 
 .parent input[type="radio"]:checked + label {
