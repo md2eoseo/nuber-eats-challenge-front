@@ -1,9 +1,10 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { getAllPodcasts } from "../../__generated__/getAllPodcasts";
 
-const GET_ALL_PODCASTS_QUERY = gql`
+export const GET_ALL_PODCASTS_QUERY = gql`
   query getAllPodcasts {
     getAllPodcasts {
       ok
@@ -22,6 +23,9 @@ export const Podcasts = () => {
   console.log(data);
   return (
     <div>
+      <Helmet>
+        <title>Home | HostPod</title>
+      </Helmet>
       <div className="grid mt-10 grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-10">
         {data?.getAllPodcasts.podcasts?.map(podcast => (
           <Link key={podcast.id} to={`/podcast/${podcast.id}`}>

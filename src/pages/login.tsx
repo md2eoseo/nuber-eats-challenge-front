@@ -13,7 +13,7 @@ import {
 } from "../__generated__/loginMutation";
 import logo from "../images/logo.svg";
 
-const LOGIN_MUTATION = gql`
+export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
     login(input: $loginInput) {
       ok
@@ -80,7 +80,7 @@ export const Login = () => {
         <div className="w-11/12">
           <input
             ref={register({
-              required: "Email is required",
+              required: "Email is required.",
               pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             })}
             name="email"
@@ -92,7 +92,7 @@ export const Login = () => {
         </div>
         <div className="w-11/12">
           <input
-            ref={register({ required: "Password is required" })}
+            ref={register({ required: "Password is required." })}
             name="password"
             type="password"
             required
@@ -108,6 +108,8 @@ export const Login = () => {
         <div className="mb-2">
           {errors.email?.message ? (
             <FormError errorMessage={errors.email?.message} />
+          ) : errors.email?.type === "pattern" ? (
+            <FormError errorMessage={"Enter a valid email."} />
           ) : (
             errors.password?.message && (
               <FormError errorMessage={errors.password?.message} />

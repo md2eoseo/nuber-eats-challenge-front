@@ -12,7 +12,7 @@ import {
 import { UserRole } from "../__generated__/globalTypes";
 import logo from "../images/logo.svg";
 
-const CREATE_USER_MUTATION = gql`
+export const CREATE_USER_MUTATION = gql`
   mutation createUserMutation($createUserInput: CreateUserInput!) {
     createUser(input: $createUserInput) {
       ok
@@ -47,6 +47,7 @@ export const CreateUser = () => {
       createUser: { ok, error },
     } = data;
     if (ok) {
+      alert("Create User Success!!");
       history.push("/");
     }
   };
@@ -86,7 +87,7 @@ export const CreateUser = () => {
         <div className="w-11/12">
           <input
             ref={register({
-              required: "Email is required",
+              required: "Email is required.",
               pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             })}
             name="email"
@@ -98,7 +99,7 @@ export const CreateUser = () => {
         </div>
         <div className="w-11/12">
           <input
-            ref={register({ required: "Password is required" })}
+            ref={register({ required: "Password is required." })}
             name="password"
             type="password"
             required
@@ -132,6 +133,8 @@ export const CreateUser = () => {
         <div className="mb-2">
           {errors.email?.message ? (
             <FormError errorMessage={errors.email?.message} />
+          ) : errors.email?.type === "pattern" ? (
+            <FormError errorMessage={"Enter a valid email."} />
           ) : (
             errors.password?.message && (
               <FormError errorMessage={errors.password?.message} />
